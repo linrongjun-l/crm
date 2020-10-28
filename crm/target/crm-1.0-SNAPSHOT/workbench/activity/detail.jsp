@@ -137,7 +137,7 @@ request.getContextPath()+"/";
 							'\t\t\t<img title="zhangsan" src="image/user-thumbnail.png" style="width: 30px; height:30px;">\n' +
 							'\t\t\t<div style="position: relative; top: -40px; left: 40px;" >\n' +
 							'\t\t\t\t<h5 id="e'+n.id+'">'+n.noteContent+'</h5>\n' +
-							'\t\t\t\t<font color="gray">市场活动</font> <font color="gray">-</font> <b>${name}</b> <small style="color: gray;" id="s'+n.id+'"> '+n.createTime+' 由'+n.createBy+'添加</small>\n' +
+							'\t\t\t\t<font color="gray">市场活动</font> <font color="gray">-</font> <b>${name}</b> <small style="color: gray;" id="s'+n.id+'"> '+(n.editFlag==0?n.createTime:n.editTime)+' 由'+(n.editFlag==0?n.createBy:n.editBy)+'添加</small>\n' +
 							'\t\t\t\t<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">\n' +
 							'\t\t\t\t\t<a class="myHref" href="javascript:void(0);" onclick="editRemark(\''+n.id+'\')"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #FF0000;"></span></a>\n' +
 							'\t\t\t\t\t&nbsp;&nbsp;&nbsp;&nbsp;\n' +
