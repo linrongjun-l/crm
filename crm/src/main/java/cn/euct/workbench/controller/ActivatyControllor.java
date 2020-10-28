@@ -7,6 +7,7 @@ import cn.euct.utils.PrintJson;
 import cn.euct.utils.UUIDUtil;
 import cn.euct.vo.PagingVo;
 import cn.euct.workbench.domain.Activity;
+import cn.euct.workbench.domain.ActivityRemark;
 import cn.euct.workbench.service.ActivityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,9 +15,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -128,11 +131,86 @@ public class ActivatyControllor {
         String editBy=((User)session.getAttribute("user")).getName();
 
         activity.setEditTime(editTime);
-        activity.setEndDate(editTime);
+        activity.setEditBy(editBy);
 
         boolean fla = activityService.update(activity);
         PrintJson.printJsonFlag(response,fla);
         System.out.println("endendend avtivity");
 
+    }
+
+    //跳转到详细信息页
+    @RequestMapping("/workbench/activity/detail.do")
+    @ResponseBody
+    public  void detail(String id,HttpServletRequest request,HttpServletResponse response){
+        System.out.println("进入到详细信息页");
+       Activity a = activityService.detail(id);
+       request.setAttribute("a",a);
+        try {
+            request.getRequestDispatcher("detail.jsp").forward(request,response);
+        } catch (ServletException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //跳转到详细信息页
+    @RequestMapping("/workbench/activity/getRemarkList.do")
+    @ResponseBody
+    public List<ActivityRemark> getRemarkList(String  activityId,HttpServletResponse response,HttpServletRequest request){
+        System.out.println("进入了备注页面");
+        List<ActivityRemark> activityRemarks= activityService.getRemark(activityId);
+
+        return activityRemarks;
+    }
+
+    @RequestMapping("/workbench/activity/deleteRemak.do")
+    @ResponseBody
+    public  void deleteRemak(String remarkId,HttpServletResponse response){
+        boolean flag=activityService.delectRemark(remarkId);
+        PrintJson.printJsonFlag(response,flag);
+    }
+    //添加备注操作
+    @RequestMapping("/workbeanch/activity/saveRemark.do")
+    @ResponseBody
+    public Map<String,Object> saveRemark(String noteContent,String activatyId,HttpSession session){
+        System.out.println("添加备注");
+        String id=UUIDUtil.getUUID();
+        String createTime=DateTimeUtil.getSysTime();
+        String createBy=((User)session.getAttribute("user")).getName();
+        ActivityRemark ar=new ActivityRemark();
+        ar.setId(id);
+        ar.setCreateTime(createTime);
+        ar.setCreateBy(createBy);
+        ar.setNoteContent(noteContent);
+        ar.setActivityId(activatyId);
+        ar.setEditFlag("0");
+        boolean flag=activityService.saveRemark(ar);
+        Map<String,Object> map=new HashMap<String ,Object>();
+        map.put("success",flag);
+        map.put("ar",ar);
+        return map;
+    }
+
+    //修改备注操作
+    @RequestMapping("/workbeanch/activity/updateRemark.do")
+    @ResponseBody
+    public Map<String,Object> updateRemark(String noteContent,String id,HttpSession session){
+        System.out.println("添加备注");
+
+        String editTime=DateTimeUtil.getSysTime();
+        String editBy=((User)session.getAttribute("user")).getName();
+        ActivityRemark ar=new ActivityRemark();
+        ar.setId(id);
+        ar.setEditTime(editTime);
+        ar.setEditBy(editBy);
+        ar.setNoteContent(noteContent);
+        ar.setEditFlag("1");
+        boolean flag=activityService.updateRemark(ar);
+        Map<String,Object> map=new HashMap<String ,Object>();
+        map.put("success",flag);
+        map.put("ar",ar);
+        return map;
     }
 }

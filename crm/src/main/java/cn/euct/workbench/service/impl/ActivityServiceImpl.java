@@ -4,6 +4,7 @@ import cn.euct.vo.PagingVo;
 import cn.euct.workbench.dao.ActivityDao;
 import cn.euct.workbench.dao.ActivityRemarkDao;
 import cn.euct.workbench.domain.Activity;
+import cn.euct.workbench.domain.ActivityRemark;
 import cn.euct.workbench.service.ActivityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -69,5 +70,47 @@ public class ActivityServiceImpl implements ActivityService {
             fla=false;
         }
         return fla;
+    }
+
+    @Override
+    public Activity detail(String id) {
+
+        return activityDao.detail(id);
+    }
+
+    @Override
+    public List<ActivityRemark> getRemark(String activityId) {
+
+        return activityRemarkDao.getRemark(activityId);
+    }
+
+    @Override
+    public boolean delectRemark(String remarkId) {
+        boolean flag=false;
+        int count=activityRemarkDao.removeRemart(remarkId);
+        if (count==1){
+            flag=true;
+        }
+        return flag;
+    }
+
+    @Override
+    public boolean saveRemark(ActivityRemark ar) {
+        boolean flag=false;
+       int count= activityRemarkDao.saveRemark(ar);
+       if (count==1){
+           flag=true;
+       }
+        return flag;
+    }
+
+    @Override
+    public boolean updateRemark(ActivityRemark ar) {
+        boolean flag=false;
+        int count= activityRemarkDao.updateRemark(ar);
+        if (count==1){
+            flag=true;
+        }
+        return flag;
     }
 }

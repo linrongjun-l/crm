@@ -73,4 +73,6 @@ public class ActivityRemark {
     public void setActivityId(String activityId) {
         this.activityId = activityId;
     }
+
+
 }

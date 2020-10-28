@@ -78,13 +78,14 @@ request.getContextPath()+"/";
 						//清空创建表单
 						$("#addAvtivityform")[0].reset();
 						//关闭模态窗口
+						paginList(1,$("#activityPage").bs_pagination("getOption","rowsPerPage"));
 						$("#createActivityModal").modal("hide");
 					}else{
 						alert("添加失败")
 					}
 				}
 			})
-			paginList(1,2);
+
 		})
 
 		//查询按钮
@@ -95,7 +96,7 @@ request.getContextPath()+"/";
 			$("#hidden-endDate").val($.trim($("#seach-endDate").val()))
 
 			$("#seach-tbody").empty();
-			paginList(1,2)
+			paginList(1,5)
 		})
 
 		//复选框全选和反全选
@@ -138,7 +139,7 @@ request.getContextPath()+"/";
 						data:param,
 						success:function (data){
 							if (data.success){
-								paginList(1,2);
+								paginList($("#activityPage").bs_pagination("getOption","currentPage"),$("#activityPage").bs_pagination("getOption","rowsPerPage"));
 								$("#chose:checked").prop("checked",false)
 							}else{
 								alert("删除失败！");
@@ -152,6 +153,17 @@ request.getContextPath()+"/";
 
 		//修改按钮模态窗口
 		$("#editBtn").click(function (){
+
+			//时间插件（由bootstart前端框架提空）
+			$(".time").datetimepicker({
+				minView: "month",
+				language:  'zh-CN',
+				format: 'yyyy-mm-dd',
+				autoclose: true,
+				todayBtn: true,
+				pickerPosition: "bottom-left"
+			});
+
 			var $xz=$("[name=xz]:checkbox:checked");
 			if ($xz.length==0){
 				alert("请选择需要修改的记录！");
@@ -175,7 +187,6 @@ request.getContextPath()+"/";
 						//默认选择登录的用户(session中获取的)
 						var id="${user.id}";
 						$("#edit-owner").val(id);
-						alert(data.activaty.id)
 						$("#edit-id").val(data.activaty.id);
 						$("#edit-name").val(data.activaty.name);
 						$("#edit-startDate").val(data.activaty.startDate);
@@ -208,18 +219,19 @@ request.getContextPath()+"/";
 					if (data.success){
 						//关闭模态窗口
 						$("#editActivityModal").modal("hide");
+						paginList($("#activityPage").bs_pagination("getOption","currentPage"),$("#activityPage").bs_pagination("getOption","rowsPerPage"));
 					}else{
 						alert("修改失败！")
 					}
 				}
 			})
 
-			paginList(1,2);
+
 		})
 
 	});
 	//分页操作
-	paginList(1,2);
+	paginList(1,5);
 	function paginList(paginNo,paginSize){
 		$("#seach-name").val($.trim($("#hidden-name").val()))
 		$("#seach-owner").val($.trim($("#hidden-owner").val()))
@@ -249,7 +261,7 @@ request.getContextPath()+"/";
 
 					$("#seach-tbody").append("<tr class='active'>")
 							.append("<td>&nbsp;&nbsp;<input type='checkbox' value='"+n.id+"' name='xz'/></td>")
-							.append("<td>&nbsp;&nbsp;<a style=\"text-decoration: none; cursor: pointer;\" onclick=\"window.location.href='workbench/activity/detail.jsp';\">"+n.name+"</a></td>")
+							.append("<td>&nbsp;&nbsp;<a style=\"text-decoration: none; cursor: pointer;\" onclick=\"window.location.href='workbench/activity/detail.do?id="+n.id+"';\">"+n.name+"</a></td>")
 							.append("<td>&nbsp;&nbsp;"+n.owner+"</td>")
 							.append("<td>&nbsp;&nbsp;"+n.startDate+"</td>")
 							.append("<td>&nbsp;&nbsp;"+n.endDate+"</td>")
@@ -288,7 +300,7 @@ request.getContextPath()+"/";
 </script>--%>
 </head>
 <body>
-	<p><%=beasepath%>
+	<p><%--<%=beasepath%>--%>
 	<input type="hidden" id="hidden-name">
 	<input type="hidden" id="hidden-owner">
 	<input type="hidden" id="hidden-startDate">
@@ -387,11 +399,11 @@ request.getContextPath()+"/";
 						<div class="form-group">
 							<label for="edit-startDate" class="col-sm-2 control-label"  >开始日期</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control " id="edit-startDate"  value="">
+								<input type="text" class="form-control time" id="edit-startDate"  value="">
 							</div>
 							<label for="edit-endDate" class="col-sm-2 control-label" >结束日期</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control " id="edit-endDate" value="">
+								<input type="text" class="form-control  time" id="edit-endDate" value="">
 							</div>
 						</div>
 						
